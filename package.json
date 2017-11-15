@@ -1,0 +1,13 @@
+{
+  "name": "dselab-regression-tester",
+  "version": "0.1.0",
+  "description": "A Node.js app for testing a regression model developed during BIBM DSE Dojo Labs",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "*",
+    "request": "*",
+    "body-parser": "*"
+  }
+}

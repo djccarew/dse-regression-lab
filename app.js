@@ -1,0 +1,206 @@
+// BASE SETUP
+// =============================================================================
+var path        = require('path');
+var bodyParser 	= require('body-parser');
+var express    	= require('express');
+var request 	= require('request');
+
+var app        	= express(); // define our app using express
+
+
+var port = (process.env.PORT || 3000);
+
+
+// VCAP_SERVICES contains all the credentials of services bound to
+// this application. For details of its content, please refer to
+// the document or sample of each service.
+var env = { baseURL: '', accessKey: '' };
+var token = { key: null, lastUpdated: 0 };
+var scoringHref = null;
+var services = JSON.parse(process.env.VCAP_SERVICES || "{}");
+var service = {};
+if (services['pm-20']) {
+   service = services['pm-20'][0];
+}
+var credentials = service.credentials;
+if (credentials != null) {	   
+		env.baseURL = credentials.url;
+		env.accessKey = credentials.access_key;
+		env.instance_id = credentials.instance_id;
+		var options = {
+			url: env.baseURL + '/v3/identity/token',
+			method: 'GET',
+			auth: {
+				user: credentials.username,
+				password: credentials.password
+			},
+			json:true
+		};
+		request(options, function(err, res, body) {
+			if (err) {
+				console.log('****Error  from GET to retrieve token ' + err + '****');
+				return;
+			}
+			
+			token.key = body.token;
+            token.lastUpdated = new Date();
+          
+			var opts = {
+			   url: env.baseURL + '/v3/wml_instances/' + env.instance_id + '/deployments',
+			   method: 'GET',
+			   headers: {
+				  Authorization: 'Bearer ' + token.key				  
+			   },
+			   json:true
+			}
+			request(opts, function(err, res, body) {
+			   if (err) {
+			      console.log('****Error  from GET to retrieve scoring href ' + err + '****');
+				  return;
+			   }
+			   
+			   for (i = 0; i < body.resources.length; i++) {
+				   if (body.resources[i].entity.published_model.name == 'Property Value Prediction Model') {
+					   scoringHref = body.resources[i].entity.scoring_url;
+					   env.published_model_id = body.resources[i].entity.published_model.guid;
+					   env.deployment_id = body.resources[i].metadata.guid;
+					   console.log('****Found Property Value Prediction Model****');
+					   break;
+				   }
+			   }
+			   if (!scoringHref) {
+				   console.log('****Error: Did not find Property Value Prediction Model****');
+			   }
+			});
+		});
+		
+}
+
+// Only  URL paths prefixed by /score will be handled by our router 
+var rootPath = '/score';
+
+// ROUTES FOR OUR API
+// =============================================================================
+var router = express.Router(); 	// get an instance of the express Router
+
+// configure router to use bodyParser()
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.json());
+
+
+// middleware to use for all requests
+router.use(function(req, res, next) {
+ 	next(); // make sure we go to the next routes and don't stop here
+});
+
+// env request
+// Echoes the URL and access key of the scoring service - useful for debugging
+router.get('/', function(req, res) {
+	res.json(env);
+});
+
+// score request
+// Calls the PM Service instance 
+router.post('/', function(req, res) {
+	
+	if (!token.key || !scoringHref) {
+		res.status(503).send('Service unavailable');
+		return;
+	}
+	
+    console.log('****=== SCORE ===');
+    console.log('****  URI  : ' + scoringHref);
+    console.log('****  Input: ' + JSON.stringify(req.body.input));
+    console.log('**** ');
+	try {
+        var scoring_opts = {
+          url: scoringHref,
+          method: "POST",
+          headers: {
+	         Authorization: 'Bearer ' + token.key				  
+          },
+          qs: { instance_id: env.instance_id, deployment_id: env.deployment_id, published_model_id: env.published_model_id },
+          json: req.body.input
+        };
+        // See if token is close to expiring, get another one it if it is and
+        // then call scoring service
+        var token_age_mins = (new Date() - token.lastUpdated)/60000;
+        console.log('****Token age in minutes  =  ' + token_age_mins + ' ****');
+        if (token_age_mins > 28) {
+            var token_options = {
+			   url: env.baseURL + '/v3/identity/token',
+			   method: 'PUT',
+			   json: {token: token.key}
+		    };
+            request(token_options, function(err, r, body) {
+               	if (err) {	
+                   console.log('****Error reply from token renewal ' + err + ' ****');	  
+			      res.status(500).send(err);
+			     }
+			     else { 
+                     token.key = body.token;
+                     token.lastUpdated = new Date();
+                     scoring_opts.headers.Authorization = 'Bearer ' + token.key;
+                     console.log('****Calling scoring  service - token renewed ****');
+		             request(scoring_opts, function(err, r, body) {
+		  	            if (err) {	
+                           console.log('****Error reply from scoring ****' + err);	    
+			               res.status(500).send(err);
+			            }
+			            else {
+				           console.log('****Reply from scoring ' + JSON.stringify(body) + ' ****');			
+                           res.json(body);
+			             }
+				
+		             });
+                 }
+            });
+        }
+        else { // token ok - just call scoring service   
+           console.log('****Calling scoring  service - token not renewed ****');
+		   request(scoring_opts, function(err, r, body) {
+			   if (err) {	
+                  console.log('****Error reply from scoring ' + err + ' ****');	
+			      res.status(500).send(err);
+			   }
+			   else {
+			   	   console.log('****Reply from scoring ' + JSON.stringify(body) + ' ****');				
+                   res.json(body);
+			   }
+				
+		   });
+        }
+
+	} catch (e) {
+		console.log('****Score exception ' + JSON.stringify(e) + ' ****');
+		var msg = '';
+		if (e instanceof String) {
+			msg = e;
+		} else if (e instanceof Object) {
+		  msg = JSON.stringify(e);
+		}
+		res.status(200);
+		return res.end(JSON.stringify({
+			flag: false,
+			message: msg
+		}));
+	}
+	
+	process.on('uncaughtException', function (err) {
+    console.log(err);
+   }); 
+});
+        
+// Register Service routes and SPA route ---------------
+
+// all of our service routes will be prefixed with rootPath
+app.use(rootPath, router);
+
+
+// SPA AngularJS application served from the root
+app.use(express.static(path.join(__dirname, 'public')));
+
+// START THE SERVER with a little port reminder when run on the desktop
+// =============================================================================
+app.listen(port);
+console.log('****App started on port ' + port + ' ****');

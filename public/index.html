@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+		<meta charset="utf-8">
+		<title>IBM DSE Dojo  Machine Learning  service regression model testing app</title>
+		<link rel="stylesheet" href="css/type.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection" />
+		<!-- Twitter Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">  
+<head>
+	<!-- load angular  -->
+	<script src="js/angular.js"></script>    
+	<script src="js//ui-bootstrap-tpls.js"></script>    
+	<!-- our scripts -->
+	<script src="js/app.js"  type="text/javascript" ></script>
+	<script src="js/srv.js"  type="text/javascript" ></script>
+</head>
+
+<body ng-app="DSERegressionTester" ng-controller="AppCtrl" >
+	<div class="title"><img alt="" src="img/pm24x24.png" />&nbsp;IBM DSE Dojo  Machine Learning  service regression model testing app</div>
+	<form name='scoreForm' novalidate>
+	<div class="body">
+		<div class="section">
+		    
+				Year built: <input name="yearbuilt" type="text" ng-model="p.YEARBUILT" size="4" value="44"  required />				
+				 <span class="error" ng-show='scoreForm.yearbuilt.$error.required'>Year built required</span><br>
+				<br>
+		
+				Neighborhood:&nbsp;&nbsp; 
+                <select ng-model="p.NEIGHBORHOOD" ng-options="x for x in neighborhoods"> </select>
+				<br>	
+				<br>
+            
+                Building type:&nbsp;&nbsp; 
+                <select ng-model="p.BLDGTYPE" ng-options="x for x in bldgtypes"> </select>
+					
+				<br><br>
+			
+			
+				Interior volume(cubic meters) : <input name="volint" type="text" ng-model="p.VOLUMEINT" size="4" required />
+				 <span class="error" ng-show='scoreForm.volint.$error.required'>Interior volume required</span><br>
+				<br>
+            
+    			Other volume(cubic meters) : <input name="voloth" type="text" ng-model="p.VOLUMEOTH" size="4" required />
+				 <span class="error" ng-show='scoreForm.voloth.$error.required'>Other  volume required</span><br>
+				<br>
+				
+                Lot size (square meters) : <input name="lotsize" type="text" ng-model="p.LOTSIZE" size="4" required />
+				 <span class="error" ng-show='scoreForm.lotsize.$error.required'>Lot size required</span><br>
+				<br>
+
+		</div>
+		<div class="section">
+			<button type="button" ng-disabled="scoreForm.$invalid" class="btn.lg" ng-click="score()"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;Score Now&nbsp;</button>
+		</div>
+	</div>	
+	</form>
+
+</body>
+	
+
+</html>
