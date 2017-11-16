@@ -285,19 +285,19 @@ In this part of the lab you’ll test the deployed model with the Node.js applic
 
 ![Test Deployed Model][33]
 
-3. When the application appears click on **Score now** to test the scoring model with the default values.  
+3. When the application appears click on **Score now** to test the scoring model with the pre-selected  values.  
 
-4. Verify that the model predicts that there is a risk of heart failure for the patient with these medical characteristics.
+4. Verify that the model predicts a value for  that property  that is close to  390,000 (the actual value of the property)
 
 ![Score][34]
 
-5. **Click Close**. Run the app again with the following parameters.
+5. **Click Close**. Run the app again choosing one or more  sets of input values from the  table below and comparing the prediction to the actual value. 
 
-![Score](images/Picture33.png)
-
-6. Verify that the model predicts that there is not a risk of heart failure for the patient with these medical characteristics.
-
-![Score][35]
+Neigborhood | Building Type | Year Built | Interior Volume | Other Volume | Lot Size | Actual Value
+--- | --- | --- | --- | --- | --- | ---
+Rijkzicht | Appartement | 1979 | 166 | 11 | 100 | 90,500
+Bomenbuurt | Tussenwoning | 1926 | 236 | 14 | 59 | 130,000
+Bloemenbuurt | Vrijstaand | 1978 | 712 | 90 | 855 | 410000
 
 Congratulations, you successfully created a predictive model in Apache Spark and deployed and tested it using the Watson Machine Learning Service in Bluemix :smiley:!!
 
@@ -314,10 +314,10 @@ Congratulations, you successfully created a predictive model in Apache Spark and
 [4]: images/create-us-space.png?raw=true
 [5]: images/select-region.png?raw=true
 [6]: images/dsx-dashboard.png?raw=true
-[7]: images/pipeline.png?raw=true
+[7]: images/pipelinev2.png?raw=true
 [8]: images/create-ml-instance.png?raw=true
-[9]: images/connect-to.png?raw=true
-[10]: images/overview-services-and-app.png?raw=true
+[9]: images/connect-tov2.png?raw=true
+[10]: images/overview-services-and-appv2.png?raw=true
 [11]: images/create-project.png?raw=true
 [12]: images/browse-file.png?raw=true
 [13]: images/data-assetsv2.png?raw=true
@@ -328,9 +328,9 @@ Congratulations, you successfully created a predictive model in Apache Spark and
 [18]: images/create-deployment1v2.png?raw=true
 [19]: images/create-deployment2v2.png?raw=true
 [20]: images/create-deployment3v2.png?raw=true
-[21]: images/toolchain.png?raw=true
-[22]: images/deploy-stage.png?raw=true
-[23]: images/restage-app.png?raw=true
+[21]: images/toolchainv2.png?raw=true
+[22]: images/deploy-stagev2.png?raw=true
+[23]: images/restage-appv2.png?raw=true
 [24]: images/settings.png?raw=true
 [25]: images/add-associated-service.png?raw=true
 [26]: images/choose-ml-service.png?raw=true
@@ -341,7 +341,6 @@ Congratulations, you successfully created a predictive model in Apache Spark and
 [31]: images/run-notebookv2.png?raw=true
 [32]: images/restart-app.png?raw=true
 [33]: images/open-app.png?raw=true
-[34]: images/failure-yes.png?raw=true
-[35]: images/failure-no.png?raw=true
+[34]: images/app-prediction.png?raw=true
 [36]: images/dsx-signup.png?raw=true
 [37]: images/use-existing-id.png?raw=true

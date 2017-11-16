@@ -21,10 +21,6 @@
 	<div class="body">
 		<div class="section">
 		    
-				Year built: <input name="yearbuilt" type="text" ng-model="p.YEARBUILT" size="4" value="44"  required />				
-				 <span class="error" ng-show='scoreForm.yearbuilt.$error.required'>Year built required</span><br>
-				<br>
-		
 				Neighborhood:&nbsp;&nbsp; 
                 <select ng-model="p.NEIGHBORHOOD" ng-options="x for x in neighborhoods"> </select>
 				<br>	
@@ -35,6 +31,10 @@
 					
 				<br><br>
 			
+                Year built: <input name="yearbuilt" type="text" ng-model="p.YEARBUILT" size="5" value="44"  required />				
+				 <span class="error" ng-show='scoreForm.yearbuilt.$error.required'>Year built required</span><br>
+				<br>
+		
 			
 				Interior volume(cubic meters) : <input name="volint" type="text" ng-model="p.VOLUMEINT" size="4" required />
 				 <span class="error" ng-show='scoreForm.volint.$error.required'>Interior volume required</span><br>
