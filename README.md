@@ -210,7 +210,7 @@ In this part of the lab you’ll create a Jupyter notebook and import the code t
 
   2. Click on **From URL** and name the notebook _Apache Spark Regression with Watson ML_.
 
-  3. Under **Notebook URL** provide the following url: https://github.com/djccarew/dse-regression-e2e-lab/blob/master/regression.ipynb
+  3. Under **Notebook URL** provide the following url: https://raw.githubusercontent.com/djccarew/dse-regression-lab/master/regression.ipynb
 
   ![Create Notebook][16]
 
