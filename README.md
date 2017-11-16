@@ -22,7 +22,7 @@ This lab is designed to demonstrate how to use IBM Data Science Experience to bu
 5. Import data on property values in Rotterdam.
 6. Trained models are deployed into production using IBM's Watson Machine Learning Service.
 7. A Node.js web app is deployed on Bluemix calling the predictive model hosted in the Watson Machine Learning Service.
-8. A user visits the web app, enters  information about a proptery in Rotterdam , and the predictive model returns a the value of the property.
+8. A user visits the web app, enters  information about a property  in Rotterdam , and the model returns a prediction of  the value of the property.
 
 
 ## Prerequisites
