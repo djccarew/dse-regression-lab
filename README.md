@@ -340,7 +340,7 @@ Congratulations, you successfully created a predictive model in Apache Spark and
 [30]: images/insert-credentials2v2.png?raw=true
 [31]: images/run-notebookv2.png?raw=true
 [32]: images/restart-app.png?raw=true
-[33]: images/open-app.png?raw=true
+[33]: images/open-appv2.png?raw=true
 [34]: images/app-prediction.png?raw=true
 [36]: images/dsx-signup.png?raw=true
 [37]: images/use-existing-id.png?raw=true
